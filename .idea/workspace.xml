@@ -34,9 +34,12 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.github" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.github" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/example" />
     </key>
@@ -90,21 +93,21 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1750" height="310" key="GridCell.Tab.0.bottom" timestamp="1603794838115">
+    <state width="1750" height="310" key="GridCell.Tab.0.bottom" timestamp="1603794878922">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="310" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838115" />
-    <state width="1750" height="310" key="GridCell.Tab.0.center" timestamp="1603794838114">
+    <state width="1750" height="310" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603794878922" />
+    <state width="1750" height="310" key="GridCell.Tab.0.center" timestamp="1603794878921">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="310" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838114" />
-    <state width="1750" height="310" key="GridCell.Tab.0.left" timestamp="1603794838113">
+    <state width="1750" height="310" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603794878921" />
+    <state width="1750" height="310" key="GridCell.Tab.0.left" timestamp="1603794878921">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="310" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838113" />
-    <state width="1750" height="310" key="GridCell.Tab.0.right" timestamp="1603794838114">
+    <state width="1750" height="310" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603794878921" />
+    <state width="1750" height="310" key="GridCell.Tab.0.right" timestamp="1603794878921">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="310" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838114" />
+    <state width="1750" height="310" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603794878921" />
   </component>
 </project>

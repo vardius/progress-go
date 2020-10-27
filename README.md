@@ -30,6 +30,8 @@ For **GoDoc** reference, **visit [pkg.go.dev](https://pkg.go.dev/github.com/vard
 🚏 HOW TO USE
 ==================================================
 
+<img align="center" src="https://github.com/vardius/progress-go/blob/master/.github/demo.gif?raw=true" alt="Progress Bar CLI" />
+
 ## 🏫 Basic example
 ```go
 package main
