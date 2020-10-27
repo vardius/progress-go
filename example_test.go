@@ -26,7 +26,7 @@ func Example() {
 	}
 
 	if _, err := bar.Stop(); err != nil {
-		log.Printf("faile to finish progress: %v", err)
+		log.Printf("failed to finish progress: %v", err)
 	}
 
 	fmt.Println(b.String())
