@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="24cb9bfc-d0dc-41b6-afd8-c0cae66b57de" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="KubernetesApiPersistence">
+    <option name="context" value="master.casa-de-papel.local" />
+    <option name="namespace" value="default" />
+  </component>
+  <component name="ProjectId" id="1jSIIe7sglrQo3oWE9YorhfOlfe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/example" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Test.Example in github.com/vardius/progress-go">
+    <configuration name="Example in github.com/vardius/progress-go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="progress-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/vardius/progress-go" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QExample\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Example in github.com/vardius/progress" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="progress-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/vardius/progress" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QExample\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/vardius/progress" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="progress-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/vardius/progress" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.Example in github.com/vardius/progress-go" />
+        <item itemvalue="Go Test.Example in github.com/vardius/progress" />
+        <item itemvalue="Go Test.go test github.com/vardius/progress" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1750" height="310" key="GridCell.Tab.0.bottom" timestamp="1603794838115">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="310" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838115" />
+    <state width="1750" height="310" key="GridCell.Tab.0.center" timestamp="1603794838114">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="310" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838114" />
+    <state width="1750" height="310" key="GridCell.Tab.0.left" timestamp="1603794838113">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="310" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838113" />
+    <state width="1750" height="310" key="GridCell.Tab.0.right" timestamp="1603794838114">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="310" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603794838114" />
+  </component>
+</project>
