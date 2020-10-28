@@ -1,4 +1,4 @@
-🗃️ progress-go
+💯 progress-go
 ================
 [![Build Status](https://travis-ci.org/vardius/progress-go.svg?branch=master)](https://travis-ci.org/vardius/progress-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vardius/progress-go)](https://goreportcard.com/report/github.com/vardius/progress-go)
