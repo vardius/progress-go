@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -23,6 +24,30 @@ const (
 	clrYellow = "\x1b[33;1m"
 	clrCyan   = "\x1b[36;1m"
 )
+
+const (
+	day  = time.Minute * 60 * 24
+	year = 365 * day
+)
+
+func humanizeDuration(d time.Duration) string {
+	if d < day {
+		return d.Round(time.Second).String()
+	}
+
+	var b strings.Builder
+	if d >= year {
+		years := d / year
+		_, _ = fmt.Fprintf(&b, "%dy", years)
+		d -= years * year
+	}
+
+	days := d / day
+	d -= days * day
+	_, _ = fmt.Fprintf(&b, "%dd%s", days, d.Round(time.Second))
+
+	return b.String()
+}
 
 type Bar struct {
 	options *Options
@@ -100,15 +125,19 @@ func (bar *Bar) play(cur int64) (n int, err error) {
 	}
 
 	if !bar.options.Verbose {
-		return fmt.Fprintf(bar.options.Output, "\r%8d/%d [%-50s] %3d%%", bar.step, bar.max, bar.rate, bar.percent)
+		return fmt.Fprintf(bar.options.Output, "\r\033[K%8d/%d [%-50s] %3d%%", bar.step, bar.max, bar.rate, bar.percent)
 	}
 
 	memoryFormat, memory := bar.getMemory()
+	elapsed := bar.getElapsed()
 
 	return fmt.Fprintf(
 		bar.options.Output,
-		"\r%s %8d/%d "+clrGreen+"[%-50s]"+clrReset+" %3d%% "+memoryFormat+" %s/%s",
-		bar.getRemaining(), bar.step, bar.max, bar.rate, bar.percent, memory, bar.getElapsed(), bar.getEstimated(),
+		"\r\033[K%8d/%d "+clrGreen+"[%-50s]"+clrReset+" %3d%% "+memoryFormat+" %s/%s %s",
+		bar.step, bar.max, bar.rate, bar.percent, memory,
+		humanizeDuration(elapsed),
+		humanizeDuration(bar.getEstimated(elapsed)),
+		humanizeDuration(bar.getRemaining(elapsed)),
 	)
 }
 
@@ -129,10 +158,10 @@ func (bar *Bar) getPercent() int64 {
 }
 
 func (bar *Bar) getElapsed() time.Duration {
-	return time.Since(bar.start).Round(time.Second)
+	return time.Since(bar.start)
 }
 
-func (bar *Bar) getEstimated() time.Duration {
+func (bar *Bar) getEstimated(elapsed time.Duration) time.Duration {
 	if bar.step == 0 {
 		return 0
 	}
@@ -140,10 +169,10 @@ func (bar *Bar) getEstimated() time.Duration {
 		return 0
 	}
 
-	return (bar.getElapsed() * time.Duration(bar.max) / time.Duration(bar.step)).Round(time.Second)
+	return (elapsed / time.Duration(bar.step)) * time.Duration(bar.max)
 }
 
-func (bar *Bar) getRemaining() time.Duration {
+func (bar *Bar) getRemaining(elapsed time.Duration) time.Duration {
 	if bar.step == 0 {
 		return 0
 	}
@@ -151,7 +180,7 @@ func (bar *Bar) getRemaining() time.Duration {
 		return 0
 	}
 
-	return (bar.getElapsed() * time.Duration(bar.max-bar.step) / time.Duration(bar.step)).Round(time.Second)
+	return (elapsed / time.Duration(bar.step)) * time.Duration(bar.max-bar.step)
 }
 
 func (bar *Bar) getMemory() (string, float64) {
