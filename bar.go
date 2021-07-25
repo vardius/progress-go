@@ -187,7 +187,7 @@ func (bar *Bar) getMemory() (string, float64) {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
-	memory := float64(m.TotalAlloc)
+	memory := float64(m.Alloc)
 
 	if memory >= gb {
 		return clrRed + "%.1f GB" + clrReset, memory / gb
