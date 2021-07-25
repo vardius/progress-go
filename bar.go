@@ -111,7 +111,6 @@ func (bar *Bar) Stop() (n int, err error) {
 	if n, err := bar.play(bar.max); err != nil {
 		return n, err
 	}
-
 	return fmt.Fprintln(bar.options.Output)
 }
 
@@ -120,8 +119,14 @@ func (bar *Bar) play(cur int64) (n int, err error) {
 	bar.step = cur
 	bar.percent = bar.getPercent()
 
-	for i := int64(0); i < (bar.percent-last)/2; i++ {
-		bar.rate += bar.options.Graph
+	if bar.percent > last {
+		if change := (bar.percent - last) / 2; change != 0 {
+			for i := int64(0); i < (bar.percent-last)/2; i++ {
+				bar.rate += bar.options.Graph
+			}
+		} else if bar.percent%2 == 0 {
+			bar.rate += bar.options.Graph
+		}
 	}
 
 	if !bar.options.Verbose {
