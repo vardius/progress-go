@@ -118,8 +118,13 @@ func (bar *Bar) play(cur int64) (n int, err error) {
 	last := bar.percent
 	bar.step = cur
 	bar.percent = bar.getPercent()
-
-	if bar.percent > last {
+	
+	if cur == bar.max {
+		remain := (150 - len(bar.rate)) / 3
+		for i := 0; i < remain; i++ {
+			bar.rate += bar.options.Graph
+		}
+	} else if bar.percent > last {
 		if change := (bar.percent - last) / 2; change != 0 {
 			for i := int64(0); i < (bar.percent-last)/2; i++ {
 				bar.rate += bar.options.Graph
