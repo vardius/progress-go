@@ -120,7 +120,7 @@ func (bar *Bar) play(cur int64) (n int, err error) {
 	bar.percent = bar.getPercent()
 	
 	if cur == bar.max {
-		remain := 50 - len(bar.rate) / 3
+		remain := (150 - len(bar.rate)) / 3
 		for i := 0; i < remain; i++ {
 			bar.rate += bar.options.Graph
 		}
