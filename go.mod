@@ -1,3 +1,3 @@
 module github.com/vardius/progress-go
 
-go 1.15
+go 1.26.0
