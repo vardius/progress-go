@@ -1,0 +1,73 @@
+---
+title: Getting started
+description: Install progress-go, draw a bar over a loop, and see what Start, Advance and Stop each do.
+---
+
+import { Code, LinkCard, CardGrid, Steps } from '@astrojs/starlight/components';
+import count from '../../../../examples/count/main.go?raw';
+
+progress-go draws a progress bar for a known amount of work. It has one type, `Bar`, and three calls:
+
+- **Start** starts the clock and, on a terminal, draws the bar and keeps redrawing it.
+- **Advance** adds to the work done, from any goroutine.
+- **Stop** draws the bar one last time, ends its line, and returns any error from writing it.
+
+## Install
+
+progress-go needs Go 1.26 or newer.
+
+```sh
+go get github.com/vardius/progress-go
+```
+
+## Your first bar
+
+This program does ten steps of a tenth of a second each, and advances a verbose bar after every step:
+
+<Code code={count} lang="go" title="examples/count/main.go" />
+
+## Run it
+
+<Steps>
+
+1. From a clone of the repository, run it in a terminal:
+
+   ```sh
+   go run ./examples/count
+   ```
+
+   The bar fills over a second, redrawn in place. Once it stops, the line reads:
+
+   ```txt
+   10/10 [██████████████████████████████████████████████████] 100% 176 KB 1s/1s 0s
+   ```
+
+   The heap size, `176 KB` here, depends on your program.
+
+2. Pipe it into another command. Its output is no longer a terminal, so the bar writes no escape codes and no
+   frames along the way: only the last line, once.
+
+   ```sh
+   go run ./examples/count | cat
+   ```
+
+</Steps>
+
+## What just happened
+
+- `progress.New` made a bar for 10 units of work. `Options{Verbose: true}` added the heap size and the times.
+  With no `Output`, the bar draws to `os.Stdout`.
+- `Start` started the clock. Standard output was a terminal, so it drew the bar and started a timer that redraws
+  it every 100 ms.
+- Each `Advance(1)` added one to the count and returned at once. The next redraw showed it.
+- `Stop` stopped the timer, drew the bar a last time, and ended the line. It returns the first error from writing
+  the bar, if there was one.
+
+## Next steps
+
+<CardGrid>
+	<LinkCard title="Counting work" href="../counting/" description="Items, bytes, resuming part way, and work that overshoots." />
+	<LinkCard title="Output" href="../output/" description="Terminals and logs, the glyph, verbose fields, write errors." />
+	<LinkCard title="Goroutines" href="../goroutines/" description="Workers that share one bar, and what Advance costs." />
+	<LinkCard title="Benchmarks" href="../benchmarks/" description="What each call costs, and how v1 compares with the untagged version." />
+</CardGrid>

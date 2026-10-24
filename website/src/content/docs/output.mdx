@@ -1,0 +1,94 @@
+---
+title: Output
+description: Where the bar is drawn, how it behaves on a terminal and in a log, the glyph it fills with, the verbose fields, and write errors.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+```go
+type Options struct {
+	Output  io.Writer // nil means os.Stdout
+	Graph   string    // empty means "█"
+	Verbose bool
+}
+```
+
+The zero `Options` draws to standard output with the default glyph.
+
+## Terminals and everything else
+
+What the bar writes depends on whether `Output` is a terminal: an `*os.File` for a character device.
+
+| | On a terminal | Anywhere else: a file, a pipe, a buffer |
+| --- | --- | --- |
+| `Start` | Draws the bar and starts a timer | Starts the clock, draws nothing |
+| While it runs | Redrawn in place every 100 ms | Nothing |
+| `Stop` | Draws it a last time and ends the line | Writes it once, as a plain line |
+| Escape codes | Clears the line before each frame; colours when verbose | None |
+
+Each frame is formatted into a buffer the bar reuses and written in one `Write`.
+
+So in a CI log or a file, each bar is one line:
+
+```txt
+42/42 [██████████████████████████████████████████████████] 100%
+```
+
+<Aside type="caution">
+While a bar runs on a terminal, write nothing else to it: the next redraw overwrites the line. If your program's
+standard output is data, draw the bar to `os.Stderr` instead.
+</Aside>
+
+## The glyph
+
+`Graph` fills one cell of the bar, and the bar has 50 cells:
+
+```go
+bar := progress.New(2, progress.Options{Graph: "#"})
+bar.Advance(1)
+err := bar.Stop()
+```
+
+```txt
+1/2 [#########################                         ]  50%
+```
+
+An empty cell is a space for each rune of `Graph`, so the bar keeps its width as it fills. With `Graph: "=>"`,
+a filled cell is `=>` and an empty one is two spaces: the bar is 100 columns wide, full or empty.
+
+Width is counted in runes. A glyph that a terminal draws two columns wide, such as most emoji, makes the bar
+grow as it fills, so pick one that takes a single column.
+
+## Verbose
+
+`Verbose` adds four fields after the percentage:
+
+```txt
+ 7/10 [███████████████████████████████████               ]  70% 2.1 MB 7s/10s 3s
+```
+
+- **The heap size**: bytes taken by heap objects, in B, KB, MB or GB of 1024. It is read from `runtime/metrics`,
+  which, unlike `runtime.ReadMemStats`, doesn't stop the world. It is close to `runtime.MemStats.HeapAlloc`, and can
+  read lower: memory each processor has cached for allocation counts only once the runtime flushes it.
+- **The time elapsed** since `Start`.
+- **The estimated total time**, after the slash, and **the time remaining**. They assume the rate of work since
+  `Start` holds, and show `?` until some work is done.
+
+Times are rounded to the second and written as Go writes durations, with days and years in front once they
+reach them: `45s`, `1h0m5s`, `2d3h0m0s`.
+
+On a terminal a verbose bar is coloured: the bar green, and the heap size cyan in KB, yellow in MB and red in GB.
+Colours are reset to normal text after each.
+
+## Write errors
+
+`Advance` never writes, so it has no error to return. When a write fails, the bar keeps the error, stops drawing,
+and `Stop` returns it:
+
+```go
+if err := bar.Stop(); err != nil {
+	log.Printf("draw progress: %v", err) // progress: write build.log: no space left on device
+}
+```
+
+Calling `Stop` again returns the same error and draws nothing.

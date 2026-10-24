@@ -1,0 +1,61 @@
+---
+title: Benchmarks
+description: What each progress-go call costs, how v1 compares with the untagged version, and how to measure it yourself.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import BenchmarkChart from '../../components/BenchmarkChart.astro';
+import BenchmarkSuite from '../../components/BenchmarkSuite.astro';
+import { comparison, suite } from '../../data/benchmarks';
+
+These numbers measure progress-go alone. `Advance` draws to `io.Discard`, so no output is counted. A whole bar draws
+to `/dev/null`, a character device that both versions treat as a terminal, so each frame costs a write system call,
+as it would on a real terminal. With 16 goroutines at once, the time is wall time per call across all of them,
+so it measures throughput.
+
+## v1 against the untagged version
+
+Both versions ran on the same harness, with the same scenarios. The untagged `Bar` isn't safe from many goroutines,
+so with 16 at once it runs behind a mutex, as its callers had to.
+
+<Tabs syncKey="bench">
+<TabItem label="Advance">
+<BenchmarkChart title="Time per Advance" rows={comparison.advance} />
+</TabItem>
+<TabItem label="A whole bar">
+<BenchmarkChart title="Time for a bar on a terminal, New to Stop" rows={comparison.bar} />
+</TabItem>
+</Tabs>
+
+The untagged version redrew the whole line on every `Advance`, formatting it with `fmt` and growing the bar by
+string concatenation, and a verbose bar called `runtime.ReadMemStats`, which stops the world, each time.
+v1's `Advance` is one atomic add. On a terminal a timer redraws the bar ten times a second; a bar of 1,000 fast
+updates draws two frames, at `Start` and at `Stop`, where the untagged version drew 1,002.
+
+## v1's own suite
+
+<BenchmarkSuite rows={suite} />
+
+<Aside title="Where the allocations go">
+`Advance` and every redraw allocate nothing: a frame is formatted into a buffer the bar keeps, with the `strconv`
+append functions, and the heap size is read into a sample the bar keeps too. `New` allocates the bar, its filled
+bar string and its buffer, plus, for an `*os.File`, the file information it checks for a terminal; a verbose bar
+adds the metrics sample and its reader. On a terminal, `Start` adds the timer and the function it calls.
+</Aside>
+
+## Run them yourself
+
+From a clone of the repository:
+
+```sh
+go test -run '^$' -bench . -benchmem
+```
+
+To compare two versions, run each a few times and compare with [benchstat](https://pkg.go.dev/golang.org/x/perf/cmd/benchstat):
+
+```sh
+go test -run '^$' -bench . -count 10 > new.txt
+benchstat old.txt new.txt
+```
+
+The allocation counts are also enforced by tests: `TestAllocations` fails if a call allocates more than it should.

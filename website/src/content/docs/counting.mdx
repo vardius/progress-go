@@ -1,0 +1,80 @@
+---
+title: Counting work
+description: Advance a bar by items or by bytes, resume a job part way, and what the bar shows when the count overshoots.
+---
+
+import { Aside, Code } from '@astrojs/starlight/components';
+import example from '../../../../examples/copy/main.go?raw';
+
+```go
+func New(total int64, opts Options) *Bar
+func (b *Bar) Advance(n int64)
+```
+
+A bar counts units of work up to a total. The unit is yours: files, rows, requests or bytes.
+`Advance` adds `n` to the count and returns. It never draws, so call it as often as you like.
+
+```go
+bar := progress.New(int64(len(rows)), progress.Options{})
+bar.Start()
+for _, r := range rows {
+	insert(r)
+	bar.Advance(1)
+}
+err := bar.Stop()
+```
+
+## Bytes
+
+To count bytes, make the total a size and advance by every write. A small writer does it, so `io.Copy` drives
+the bar:
+
+<Code code={example} lang="go" title="examples/copy/main.go" />
+
+`io.MultiWriter` writes to the file first, so the bar counts only bytes the file took.
+
+## Resuming
+
+To pick up a job part way, advance by the work already done before `Start`:
+
+```go
+bar := progress.New(size, progress.Options{Verbose: true})
+bar.Advance(alreadyDownloaded)
+bar.Start()
+```
+
+The bar starts at that count. The time estimates count only the work done since `Start`, so the earlier work
+doesn't make them optimistic.
+
+## What the bar shows
+
+```txt
+ 7/10 [███████████████████████████████████               ]  70%
+```
+
+- **The count** is right-aligned to the width of the total, so it keeps its place as it grows.
+- **The bar** is 50 cells. A cell fills for every 2% of the total, rounded down: 7 of 10 fills 35 cells.
+- **The percentage** is rounded down, so 199 of 200 is 99%. It shows 100% only once the work is done.
+
+The count always shows the true number, while the bar and the percentage stay within 0 and 100%:
+
+| Count | Bar and percentage |
+| --- | --- |
+| Above the total, such as `12/10` | Full, 100% |
+| Below zero, after a negative `Advance` | Empty, 0% |
+| Any count, with a total of 0 or less | Full, 100%: there was nothing to do |
+
+The maths is exact for any `int64`, the largest totals included.
+
+## Stopping part way
+
+`Stop` draws the bar as it stands. A job that fails at 3 of 10 ends showing it:
+
+```txt
+ 3/10 [███████████████                                   ]  30%
+```
+
+<Aside>
+The untagged version filled the bar at `Stop`, so a failed job looked done. To end on a full bar, advance to the
+total first.
+</Aside>

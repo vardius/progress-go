@@ -1,0 +1,129 @@
+---
+title: A progress bar for Go
+description: A progress bar for Go that stays out of the hot path. Advance is one atomic add, safe from any goroutine; the bar redraws itself in place on a terminal and writes one plain line anywhere else.
+template: splash
+hero:
+  title: A progress bar that stays out of the <span class="accent">hot path</span>
+  tagline: Count work from any number of goroutines with one atomic add. On a terminal the bar redraws itself in place ten times a second; anywhere else it writes one plain line when you stop it.
+  actions:
+    - text: Get started
+      link: getting-started/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/vardius/progress-go
+      icon: github
+      variant: minimal
+---
+
+import { CardGrid, Card, LinkButton, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+import BenchmarkChart from '../../components/BenchmarkChart.astro';
+import Stats from '../../components/Stats.astro';
+import { comparison } from '../../data/benchmarks';
+
+<Stats />
+
+<div class="landing-section">
+
+<p class="eyebrow">Features</p>
+
+## What you get
+
+<CardGrid>
+	<Card title="One atomic add" icon="rocket">
+		`Advance` adds to a counter and returns. It never draws and never allocates, so it fits in the tightest
+		loop.
+	</Card>
+	<Card title="Workers share a bar" icon="puzzle">
+		Call `Advance` from as many goroutines as you like. `Start` and `Stop` are safe from any of them too.
+	</Card>
+	<Card title="Calm on a terminal" icon="laptop">
+		A timer redraws the bar in place ten times a second, however fast the work goes, so the terminal never
+		floods and a slow job's times keep ticking.
+	</Card>
+	<Card title="Plain in logs" icon="document">
+		Written to a file, a pipe or a buffer, the bar is one line at `Stop`, with no escape codes.
+	</Card>
+	<Card title="Exact at the edges" icon="approve-check">
+		Integer maths for any `int64` count. The percentage stays within 0 and 100%, and a job stopped part way
+		shows where it stopped.
+	</Card>
+	<Card title="Verbose without pauses" icon="information">
+		The heap size comes from `runtime/metrics`, which doesn't stop the world, beside the time elapsed, the
+		estimated total and the time remaining.
+	</Card>
+</CardGrid>
+
+</div>
+
+<div class="landing-section">
+
+<p class="eyebrow">Performance</p>
+
+## Faster than the untagged version, with nothing to allocate
+
+<div class="landing-lead">
+	`Advance` no longer draws: it is one atomic add. A timer redraws the bar ten times a second, formatting it
+	into a reused buffer and writing it in one call, and the verbose heap size no longer stops the world.
+	With 16 goroutines at once, the time is wall time per call across all of them, so it measures throughput.
+</div>
+
+<Tabs syncKey="bench">
+<TabItem label="Advance">
+<BenchmarkChart title="Time per Advance" rows={comparison.advance} />
+</TabItem>
+<TabItem label="A whole bar">
+<BenchmarkChart title="Time for a bar on a terminal, New to Stop" rows={comparison.bar} />
+</TabItem>
+</Tabs>
+
+<LinkCard title="How these were measured" href="benchmarks/" description="Methodology, the full v1 suite, and how to run it yourself." />
+
+</div>
+
+<div class="landing-section">
+
+<p class="eyebrow">Upgrading</p>
+
+## Coming from the untagged version
+
+<div class="landing-lead">
+	The options and the bar on screen are as before. The calls return less, a total replaces start and max, and
+	`Stop` now shows where a job stopped instead of filling the bar.
+</div>
+
+<div class="compare">
+
+```go title="untagged"
+bar := progress.New(0, n, progress.Options{})
+_, _ = bar.Start()
+for _, f := range files {
+	process(f)
+	_, _ = bar.Advance(1)
+}
+_, err := bar.Stop()
+```
+
+```go title="v1"
+bar := progress.New(n, progress.Options{})
+bar.Start()
+for _, f := range files {
+	process(f)
+	bar.Advance(1)
+}
+err := bar.Stop()
+```
+
+</div>
+
+<LinkCard title="Migration guide" href="migrating-from-the-untagged-version/" description="Every untagged call and its v1 form, and the behaviour changes to know about." />
+
+</div>
+
+<div class="cta not-content">
+	<h2>Draw your first bar in five minutes</h2>
+	<p>Install the module, wrap a loop in Start, Advance and Stop, and watch it count. The guides cover bytes, goroutines and verbose output.</p>
+	<div class="cta-actions">
+		<LinkButton href="getting-started/" icon="right-arrow">Get started</LinkButton>
+		<LinkButton href="counting/" variant="minimal">Read the docs</LinkButton>
+	</div>
+</div>

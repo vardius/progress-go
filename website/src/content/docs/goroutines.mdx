@@ -1,0 +1,45 @@
+---
+title: Goroutines
+description: Share one bar between workers, what Advance costs when they all call it, and how the redraw timer runs.
+---
+
+import { Aside, Code } from '@astrojs/starlight/components';
+import example from '../../../../examples/parallel/main.go?raw';
+
+Every method of `Bar` is safe to call from many goroutines at once. Workers can share one bar and advance it as
+each finishes a piece of work, with no lock of your own.
+
+<Code code={example} lang="go" title="examples/parallel/main.go" />
+
+The program draws the bar to standard error, so the checksums on standard output stay clean for a pipe.
+
+## What Advance costs
+
+`Advance` is one atomic add on the bar's counter. On one goroutine it takes about 2 ns and never allocates.
+When many goroutines advance the same bar at once, they take turns on that one counter, and each call costs
+more: see [Benchmarks](../benchmarks/). That is still far below the cost of any real piece of work, but if each
+of your units is tiny, count them locally and advance once per batch:
+
+```go
+for i, row := range rows {
+	insert(row)
+	if (i+1)%1000 == 0 {
+		bar.Advance(1000)
+	}
+}
+bar.Advance(int64(len(rows) % 1000))
+```
+
+## The redraw timer
+
+On a terminal, `Start` draws the bar and sets a timer. Each time it fires, the bar reads the count, draws a frame,
+and sets the timer again, 100 ms on. `Advance` takes no part, so however many goroutines call it, and however
+fast, the terminal gets ten frames a second.
+
+`Start`, the redraws and `Stop` share one lock, which also orders the writes. `Stop` stops the timer and draws the
+last frame under that lock, so once `Stop` returns, the bar never writes again, even if a redraw was due.
+
+<Aside>
+A bar that isn't stopped keeps its timer running. Call `Stop` when the work ends, on every path: a `defer` works
+if you don't need its error.
+</Aside>
